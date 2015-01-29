@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>
+        body {
+        }
+
+        .post-sign-in {
+            display: none;
+        }
+
+        .during-upload {
+            display: none;
+        }
+
+        .post-upload {
+            display: none;
+        }
+
+        #channel-block {
+            padding-bottom: 20px;
+        }
+
+        label {
+            display: block;
+        }
+
+        input[type="text"], textarea, progress {
+            width: 15em;
+            margin-bottom: 1em;
+            padding: 0.5em;
+        }
+
+        textarea {
+            height: 7em;
+        }
+
+        #submit {
+            height: 50px;
+            width: 15em;
+            margin-top: 20px;
+        }
+
+        .user-profile-header-tags-container {
+            width: 250px;
+            float: left;
+        }
+
+        .user-profile-info-interests-container {
+            height: 50px;
+            margin-top: -20px;
+        }
+
+            .user-profile-info-interests-container ul {
+                margin-left: -5px;
+                padding: 0 0 0 30px;
+                list-style-type: none;
+            }
+
+            .user-profile-info-interests-container li {
+                float: left;
+                color: #fff;
+                padding: 7px 30px;
+                margin: 2px;
+                background-color: #77a139;
+                display: block;
+            }
+
+        .privacy {
+            padding-bottom: 20px;
+        }
+
+            .privacy label {
+                width: 100px;
+                float: left;
+            }
+
+        #file-block {
+            padding-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <p>
+        <a href="https://console.developers.google.com/project">register project</a>
+    </p>
+    <p>
+        <a href="https://www.youtube.com/features">enable custom thumbnails</a>
+    </p>
+    <p><a href="https://developers.google.com/+/web/signin/reference">signin btn</a></p>
+
+    <p>
+        <a href="https://developers.google.com/accounts/docs/OAuth2UserAgent">link</a>
+
+        <ul>
+            <li>You can use the access tokens you get to access the resources corresponding to any of the scopes that are rolled into the combined authorization.</li>
+            <li>When you use the refresh token for a combined authorization, the new access tokens represent the combined authorization and can be used for any of its scopes.</li>
+            <li>The combined authorization includes any previously granted authorizations even if they were requested from different clients. For example, if you requested the <code>https://www.googleapis.com/auth/plus.login</code> scope from a desktop app, and then issued the request in the example URI above for the same user from a mobile app, and it was granted, the combined authorization would include both scopes.</li>
+            <li>When you revoke a token which represents a combined authorization, all of the authorizations are revoked simultaneously; this means that if you retain a token for one of the previous authorizations, it will stop working.</li>
+        </ul>
+    </p>
+    <p>
+        If you're using the client-side web applications flow, which is appropriate if you're writing code in JavaScript that runs in the browser, then there's no way to get back a refresh token and periodically refresh it to get an access token. The accounts.google.com server doesn't support CORS, for one thing, so it's not possible to send the HTTP POST refresh request from your JavaScript.
+    </p>
+    <hr />
+
+    <span id="signinButton" class="pre-sign-in">
+        <span class="g-signin"
+              data-callback="oauth2Callback"
+              data-accesstype="offline"
+              data-clientid="27213028471-7ra8pr97k4sk67icbdt9ga7gphkv069k.apps.googleusercontent.com"
+              data-cookiepolicy="single_host_origin"
+              data-approvalprompt="auto"
+              data-scope="https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtube.upload">
+        </span>
+
+    </span>
+
+    <div class="post-sign-in">
+        <div id="channel-block">
+            <img id="channel-thumbnail">
+            <span id="channel-name"></span>
+        </div>
+
+        <form id="upload-form">
+            <div>
+                <input id="title" type="text" value="Title">
+            </div>
+            <div>
+                <textarea id="description">Description.</textarea>
+            </div>
+            <div class="user-profile-header-tags-container clearfix">
+                <input placeholder="Enter video #tag +press space" type="text" class="user-profile-header-tags-input" />
+            </div>
+            <div class="user-profile-info-interests-container">
+                <ul>
+                    <li>test</li>
+                    <li>me</li>
+                </ul>
+            </div>
+            <div class="privacy">
+                <label for="privacy-status">Privacy Status:</label>
+                <select id="privacy-status">
+                    <option>public</option>
+                    <option>unlisted</option>
+                    <option>private</option>
+                </select>
+            </div>
+
+
+            <div id="thumb-block">
+                Thumbnail
+                <input id="thumb" type="file">
+                <img id="thumb-img" src="#" alt="your thumb" style="display: none; position: absolute; top:  0; right: 0;" />
+            </div>
+
+            <div id="file-block">
+                Video file
+                <input id="file" type="file" accept="video/*">
+            </div>
+
+
+
+            <input id="submit" type="submit" value="Upload">
+        </form>
+
+        <hr />
+        <div class="during-upload" style="width: 50%;float: left;">
+            VIDEO
+            <p><span id="percent-transferred"></span>% done (<span id="bytes-transferred"></span>/<span id="total-bytes"></span> bytes)</p>
+            <progress id="upload-progress" max="1" value="0"></progress>
+        </div>
+        <div class="during-upload" style="width: 50%; float: right;">
+            THUMBNAIL
+            <p><span id="percent-transferred-1"></span>% done (<span id="bytes-transferred-1"></span>/<span id="total-bytes-1"></span> bytes)</p>
+            <progress id="upload-progress-1" max="1" value="0"></progress>
+            <div id="log"></div>
+        </div>
+
+        <div class="post-upload">
+            <p>Uploaded video with id <span id="video-id"></span>. Polling for status...</p>
+            <ul id="post-upload-status"></ul>
+            <div id="player"></div>
+        </div>
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
